@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué Geely es para ti?</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#17202a}
+.container{max-width:650px;margin:auto;padding:22px}
+.card{background:#fff;border-radius:22px;padding:25px;box-shadow:0 8px 30px #0001}
+.logo{font-weight:800;font-size:28px;text-align:center;margin-bottom:5px}.sub{text-align:center;color:#667085;margin-bottom:22px}
+.progress{height:8px;background:#e8edf2;border-radius:10px;overflow:hidden;margin-bottom:25px}.bar{height:100%;width:16%;background:#111;border-radius:10px}
+h1{font-size:25px;margin:8px 0 10px}.question{font-size:18px;font-weight:700;margin:22px 0 14px}
+.option{display:block;width:100%;padding:15px;margin:10px 0;border:1px solid #d8dee5;border-radius:14px;background:white;text-align:left;font-size:16px;cursor:pointer}
+.option:hover{background:#f2f5f7}.option.selected{border:2px solid #111;background:#eef1f3}
+input{width:100%;padding:15px;border:1px solid #d8dee5;border-radius:12px;font-size:16px;margin:8px 0}
+button{width:100%;border:0;border-radius:14px;padding:16px;font-size:17px;font-weight:800;cursor:pointer;background:#111;color:white;margin-top:15px}
+button.secondary{background:#e9edf1;color:#17202a}.hidden{display:none}.result{font-size:17px;line-height:1.5}.badge{display:inline-block;background:#eef1f3;padding:8px 12px;border-radius:30px;font-weight:700;margin:5px 3px}
+.wa{background:#25D366;font-size:18px}.small{font-size:12px;color:#667085;text-align:center;margin-top:15px}
+</style>
+</head>
+<body>
+<div class="container"><div class="card">
+<div class="logo">GEELY</div>
+<div class="sub">Encuentra la opción que más se adapta a ti 🚘</div>
+<div class="progress"><div id="bar" class="bar"></div></div>
+
+<div id="quiz">
+  <div class="question">1. ¿Qué tipo de vehículo buscas?</div>
+  <button class="option" data-key="tipo" data-value="Sedán">🚗 Sedán</button>
+  <button class="option" data-key="tipo" data-value="SUV">🚙 SUV</button>
+  <button class="option" data-key="tipo" data-value="Eléctrico">⚡ Eléctrico</button>
+  <button class="option" data-key="tipo" data-value="Híbrido">🔋 Híbrido</button>
+  <button class="option" data-key="tipo" data-value="Trabajo / negocio">💼 Trabajo / negocio</button>
+  <button id="next" disabled>Siguiente</button>
+</div>
+
+<div id="result" class="hidden">
+  <h1>🎉 ¡Listo!</h1>
+  <div class="result" id="resultText"></div>
+  <hr>
+  <p><b>Déjame tus datos para revisar tu caso:</b></p>
+  <input id="nombre" placeholder="Tu nombre">
+  <input id="enganche" placeholder="¿Cuánto tienes para enganche?">
+  <input id="mensualidad" placeholder="¿Qué mensualidad buscas?">
+  <input id="ingresos" placeholder="¿Compruebas ingresos? Sí / No">
+  <input id="historial" placeholder="¿Tienes historial crediticio?">
+  <button class="wa" onclick="sendWhatsApp()">💬 Enviar mi información por WhatsApp</button>
+  <button class="secondary" onclick="location.reload()">Volver a empezar</button>
+  <div class="small">Al continuar se abrirá WhatsApp con tus respuestas listas para enviar.</div>
+</div>
+</div></div>
+
+<script>
+let selected="";
+const options=document.querySelectorAll('.option');
+const next=document.getElementById('next');
+options.forEach(o=>o.addEventListener('click',()=>{
+  options.forEach(x=>x.classList.remove('selected'));
+  o.classList.add('selected'); selected=o.dataset.value; next.disabled=false;
+}));
+next.addEventListener('click',()=>{
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  document.getElementById('bar').style.width='100%';
+  let recommendation;
+  if(selected==="SUV") recommendation="Coolray / Coolray Lite";
+  else if(selected==="Eléctrico") recommendation="EX2";
+  else if(selected==="Híbrido") recommendation="EX5 EM-i";
+  else if(selected==="Trabajo / negocio") recommendation="Emgrand GC";
+  else recommendation="Emgrand";
+  document.getElementById('resultText').innerHTML=
+    `Por lo que me indicaste, podemos revisar opciones como <span class="badge">${recommendation}</span>.<br><br>
+    <b>📍 Atención personalizada en Ciudad Valles.</b><br>
+    Te ayudaré a revisar enganche, mensualidad y la opción que mejor se adapte a tu presupuesto.`;
+});
+function sendWhatsApp(){
+ const nombre=document.getElementById('nombre').value.trim()||"No proporcionado";
+ const enganche=document.getElementById('enganche').value.trim()||"No proporcionado";
+ const mensualidad=document.getElementById('mensualidad').value.trim()||"No proporcionada";
+ const ingresos=document.getElementById('ingresos').value.trim()||"No especificado";
+ const historial=document.getElementById('historial').value.trim()||"No especificado";
+ const msg=`Hola, soy ${nombre}. Realicé el test de Geely y quiero que revisen mi caso.%0A%0A🚘 Tipo de vehículo: ${selected}%0A💰 Enganche disponible: ${enganche}%0A💵 Mensualidad buscada: ${mensualidad}%0A📄 Compruebo ingresos: ${ingresos}%0A📊 Historial crediticio: ${historial}%0A%0AQuiero conocer qué opciones Geely puedo estrenar.`;
+ window.location.href=`https://wa.me/524811055245?text=${msg}`;
+}
+</script>
+</body>
+</html>
